@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photo Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .filter-buttons {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            margin: 0 10px 10px 0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .photo-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            transform: scale(1);
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .photo-card.hidden {
+            display: none;
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover .photo-img {
+            transform: scale(1.1);
+        }
+
+        .photo-info {
+            padding: 20px;
+        }
+
+        .photo-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .photo-desc {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .photo-date {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .photo-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-top: 10px;
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+
+        .modal-img {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .modal-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ccc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .photo-card {
+            animation: slideUp 0.6s ease;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            
+            .filter-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+                margin: 0 5px 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📸 My Photo Gallery</h1>
+            <p>소중한 순간들을 담은 사진첩입니다</p>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">전체</button>
+            <button class="filter-btn" data-filter="nature">자연</button>
+            <button class="filter-btn" data-filter="city">도시</button>
+            <button class="filter-btn" data-filter="food">음식</button>
+            <button class="filter-btn" data-filter="travel">여행</button>
+        </div>
+
+        <div class="gallery" id="gallery">
+            <!-- 사진 카드들이 JavaScript로 동적 생성됩니다 -->
+        </div>
+    </div>
+
+    <!-- 모달 -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-img" class="modal-img" src="" alt="">
+            <div id="modal-info" class="modal-info"></div>
+        </div>
+    </div>
+
+    <script>
+        // 샘플 사진 데이터 (실제로는 이 부분을 수정해서 사용하세요)
+        const photos = [
+            {
+                id: 1,
+                src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                title: "아름다운 산맥",
+                description: "해가 질 때의 장엄한 산맥의 모습입니다.",
+                date: "2024-01-15",
+                category: "nature"
+            },
+            {
+                id: 2,
+                src: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                title: "도시의 야경",
+                description: "밤에 빛나는 도시의 아름다운 스카이라인입니다.",
+                date: "2024-02-20",
+                category: "city"
+            },
+            {
+                id: 3,
+                src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+                title: "맛있는 요리",
+                description: "정성스럽게 만든 파스타 요리입니다.",
+                date: "2024-03-10",
+                category: "food"
+            },
+            {
+                id: 4,
+                src: "https://images.unsplash.com/photo-1501436513145-30f24e19fcc4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80",
+                title: "바다 여행",
+                description: "푸른 바다와 함께한 완벽한 휴가였습니다.",
+                date: "2024-04-05",
+                category: "travel"
+            },
+            {
+                id: 5,
+                src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
+                title: "숲속 산책",
+                description: "새벽 안개가 자욱한 신비로운 숲길입니다.",
+                date: "2024-05-12",
+                category: "nature"
+            },
+            {
+                id: 6,
+                src: "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
+                title: "디저트 카페",
+                description: "달콤한 케이크와 함께한 오후 티타임입니다.",
+                date: "2024-06-18",
+                category: "food"
+            }
+        ];
+
+        // 갤러리 렌더링
+        function renderGallery(photosToShow = photos) {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            photosToShow.forEach((photo, index) => {
+                const photoCard = document.createElement('div');
+                photoCard.className = 'photo-card';
+                photoCard.style.animationDelay = `${index * 0.1}s`;
+                photoCard.dataset.category = photo.category;
+
+                photoCard.innerHTML = `
+                    <img src="${photo.src}" alt="${photo.title}" class="photo-img">
+                    <div class="photo-info">
+                        <div class="photo-title">${photo.title}</div>
+                        <div class="photo-desc">${photo.description}</div>
+                        <div class="photo-date">${photo.date}</div>
+                        <div class="photo-category">${getCategoryName(photo.category)}</div>
+                    </div>
+                `;
+
+                // 클릭 이벤트 추가
+                photoCard.addEventListener('click', () => openModal(photo));
+                gallery.appendChild(photoCard);
+            });
+        }
+
+        // 카테고리 한글 이름
+        function getCategoryName(category) {
+            const categoryNames = {
+                nature: '자연',
+                city: '도시',
+                food: '음식',
+                travel: '여행'
+            };
+            return categoryNames[category] || category;
+        }
+
+        // 필터 기능
+        function setupFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 모든 버튼에서 active 클래스 제거
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    // 클릭된 버튼에 active 클래스 추가
+                    btn.classList.add('active');
+                    
+                    const filter = btn.dataset.filter;
+                    
+                    if (filter === 'all') {
+                        renderGallery(photos);
+                    } else {
+                        const filteredPhotos = photos.filter(photo => photo.category === filter);
+                        renderGallery(filteredPhotos);
+                    }
+                });
+            });
+        }
+
+        // 모달 기능
+        function openModal(photo) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalInfo = document.getElementById('modal-info');
+            
+            modalImg.src = photo.src;
+            modalImg.alt = photo.title;
+            
+            modalInfo.innerHTML = `
+                <div class="photo-title" style="font-size: 1.8em; margin-bottom: 15px;">${photo.title}</div>
+                <div class="photo-desc" style="font-size: 1.2em; margin-bottom: 15px;">${photo.description}</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="photo-date" style="font-size: 1.1em;">${photo.date}</div>
+                    <div class="photo-category">${getCategoryName(photo.category)}</div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 이벤트 리스너 설정
+        function setupEventListeners() {
+            // 모달 닫기
+            document.querySelector('.close').addEventListener('click', closeModal);
+            document.getElementById('modal').addEventListener('click', (e) => {
+                if (e.target.id === 'modal') {
+                    closeModal();
+                }
+            });
+            
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        }
+
+        // 초기화
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGallery();
+            setupFilters();
+            setupEventListeners();
+        });
+    </script>
+</body>
+</html>
