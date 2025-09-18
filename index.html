@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Photo Gallery</title>
     <style>
+        /* style.css */
         * {
             margin: 0;
             padding: 0;
@@ -39,13 +40,16 @@
             gap: 15px;
         }
 
-        .header-image {
+        .header-icon {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .header-icon:hover {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .header p {
@@ -226,11 +230,13 @@
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2em;
+                flex-direction: column;
+                gap: 10px;
             }
             
-            .header-image {
-                width: 45px;
-                height: 45px;
+            .header-icon {
+                width: 50px;
+                height: 50px;
             }
             
             .gallery {
@@ -249,7 +255,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1><img src="https://anyo2000.github.io/images/IMG_2712.HEIC" alt="Profile" class="header-image"> My Photo Gallery</h1>
+            <h1>
+                <img src="https://anyo2000.github.io/images/CK_td00880011166_l.jpg" alt="Gallery Icon" class="header-icon">
+                My Photo Gallery
+            </h1>
             <p>소중한 순간들을 담은 사진첩입니다</p>
         </div>
 
@@ -276,6 +285,8 @@
     </div>
 
     <script>
+        // script.js
+
         // 샘플 사진 데이터 (실제로는 이 부분을 수정해서 사용하세요)
         const photos = [
             {
