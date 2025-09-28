@@ -81,18 +81,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
-        }
-
-        .input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
         }
 
         .amount-input {
             width: 80px;
-            padding: 10px 25px 10px 10px;
+            padding: 10px;
             font-size: 1.1em;
             border: 2px solid #e0e0e0;
             border-radius: 6px;
@@ -100,57 +93,21 @@
             -moz-appearance: textfield;
         }
 
+        /* 브라우저 기본 스피너 완전히 숨기기 */
         .amount-input::-webkit-outer-spin-button,
         .amount-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
+        .amount-input[type=number] {
+            -moz-appearance: textfield;
+        }
+
         .amount-input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-        }
-
-        .arrow-buttons {
-            position: absolute;
-            right: 3px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-
-        .arrow-btn {
-            width: 18px;
-            height: 16px;
-            background: #f0f0f0;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: #666;
-            transition: background 0.2s;
-        }
-
-        .arrow-btn:first-child {
-            border-radius: 3px 3px 0 0;
-        }
-
-        .arrow-btn:last-child {
-            border-radius: 0 0 3px 3px;
-        }
-
-        .arrow-btn:hover {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        .arrow-btn:active {
-            background: #d0d0d0;
         }
 
         .unit {
@@ -281,26 +238,14 @@
             <div class="input-row">
                 <span class="input-label">리치 :</span>
                 <div class="input-right">
-                    <div class="input-container">
-                        <input type="number" class="amount-input" id="day2-reach" placeholder="0" min="0" step="1">
-                        <div class="arrow-buttons">
-                            <div class="arrow-btn" onclick="incrementValue('day2-reach')">▲</div>
-                            <div class="arrow-btn" onclick="decrementValue('day2-reach')">▼</div>
-                        </div>
-                    </div>
+                    <input type="number" class="amount-input" id="day2-reach" placeholder="0" min="0" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <div class="input-container">
-                        <input type="number" class="amount-input" id="day2-guarantee" placeholder="0" min="0" step="1">
-                        <div class="arrow-buttons">
-                            <div class="arrow-btn" onclick="incrementValue('day2-guarantee')">▲</div>
-                            <div class="arrow-btn" onclick="decrementValue('day2-guarantee')">▼</div>
-                        </div>
-                    </div>
+                    <input type="number" class="amount-input" id="day2-guarantee" placeholder="0" min="0" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -311,26 +256,14 @@
             <div class="input-row">
                 <span class="input-label">리치 :</span>
                 <div class="input-right">
-                    <div class="input-container">
-                        <input type="number" class="amount-input" id="day10-reach" placeholder="0" min="0" step="1">
-                        <div class="arrow-buttons">
-                            <div class="arrow-btn" onclick="incrementValue('day10-reach')">▲</div>
-                            <div class="arrow-btn" onclick="decrementValue('day10-reach')">▼</div>
-                        </div>
-                    </div>
+                    <input type="number" class="amount-input" id="day10-reach" placeholder="0" min="0" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <div class="input-container">
-                        <input type="number" class="amount-input" id="day10-guarantee" placeholder="0" min="0" step="1">
-                        <div class="arrow-buttons">
-                            <div class="arrow-btn" onclick="incrementValue('day10-guarantee')">▲</div>
-                            <div class="arrow-btn" onclick="decrementValue('day10-guarantee')">▼</div>
-                        </div>
-                    </div>
+                    <input type="number" class="amount-input" id="day10-guarantee" placeholder="0" min="0" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -341,13 +274,7 @@
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <div class="input-container">
-                        <input type="number" class="amount-input" id="day16-guarantee" placeholder="0" min="0" step="1">
-                        <div class="arrow-buttons">
-                            <div class="arrow-btn" onclick="incrementValue('day16-guarantee')">▲</div>
-                            <div class="arrow-btn" onclick="decrementValue('day16-guarantee')">▼</div>
-                        </div>
-                    </div>
+                    <input type="number" class="amount-input" id="day16-guarantee" placeholder="0" min="0" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -366,23 +293,6 @@
     <div class="money-rain" id="moneyRain"></div>
 
     <script>
-        // 화살표 버튼 기능
-        function incrementValue(inputId) {
-            const input = document.getElementById(inputId);
-            const currentValue = parseInt(input.value) || 0;
-            input.value = currentValue + 1;
-            hideResult();
-        }
-
-        function decrementValue(inputId) {
-            const input = document.getElementById(inputId);
-            const currentValue = parseInt(input.value) || 0;
-            if (currentValue >= 1) {
-                input.value = currentValue - 1;
-                hideResult();
-            }
-        }
-
         function hideResult() {
             const result = document.getElementById('result');
             result.style.display = 'none';
