@@ -238,14 +238,14 @@
             <div class="input-row">
                 <span class="input-label">리치 :</span>
                 <div class="input-right">
-                    <input type="number" class="amount-input" id="day2-reach" placeholder="0" min="0" step="1">
+                    <input type="number" class="amount-input" id="day2-reach" placeholder="0" min="0" max="999" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <input type="number" class="amount-input" id="day2-guarantee" placeholder="0" min="0" step="1">
+                    <input type="number" class="amount-input" id="day2-guarantee" placeholder="0" min="0" max="999" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -256,14 +256,14 @@
             <div class="input-row">
                 <span class="input-label">리치 :</span>
                 <div class="input-right">
-                    <input type="number" class="amount-input" id="day10-reach" placeholder="0" min="0" step="1">
+                    <input type="number" class="amount-input" id="day10-reach" placeholder="0" min="0" max="999" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <input type="number" class="amount-input" id="day10-guarantee" placeholder="0" min="0" step="1">
+                    <input type="number" class="amount-input" id="day10-guarantee" placeholder="0" min="0" max="999" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -274,7 +274,7 @@
             <div class="input-row">
                 <span class="input-label">인보장 :</span>
                 <div class="input-right">
-                    <input type="number" class="amount-input" id="day16-guarantee" placeholder="0" min="0" step="1">
+                    <input type="number" class="amount-input" id="day16-guarantee" placeholder="0" min="0" max="999" step="1">
                     <span class="unit">만원</span>
                 </div>
             </div>
@@ -304,13 +304,15 @@
             if (amount < 20) return 0; // 20만원 미만은 시상 없음
             
             if (period === 'day2') {
-                if (amount >= 20 && amount <= 50) {
+                if (amount >= 20 && amount < 50) {
                     return amount * 10000 * 2; // 200%
+                } else if (amount >= 50) {
+                    return amount * 10000 * 2; // 50만원 이상도 200%
                 }
             } else if (period === 'day10') {
-                if (amount >= 20 && amount <= 50) {
+                if (amount >= 20 && amount < 50) {
                     return amount * 10000 * 1.5; // 150%
-                } else if (amount > 50) {
+                } else if (amount >= 50) {
                     return amount * 10000 * 2; // 200%
                 }
             }
