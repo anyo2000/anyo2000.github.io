@@ -1,493 +1,584 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>돈벼락 계산기</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import React, { useState } from 'react';
+import { Heart, TrendingUp, Users, AlertTriangle, CheckCircle, XCircle, BarChart3, DollarSign, Clock, Shield, ArrowRight, RefreshCw, Award } from 'lucide-react';
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 15px;
-        }
+export default function CancerInsuranceLearning() {
+  const [step, setStep] = useState(0); // 현재 학습 단계 (0: 시작, 1: 예측, 2: 정답, 3: 시나리오 선택, 4: 시나리오 진행, 5: 전체 비교, 6: 롤플레이, 7: 완료)
+  const [userPrediction, setUserPrediction] = useState(50); // 사용자의 예측값 (100명 중 몇 명)
+  const [selectedScenario, setSelectedScenario] = useState(null); // 선택된 시나리오 데이터
+  const [scenarioProgress, setScenarioProgress] = useState(0); // 시나리오 진행도 (치료 단계)
+  const [consultingAnswer, setConsultingAnswer] = useState(null); // 롤플레이 선택 답변 인덱스
 
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 25px 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            text-align: center;
-        }
+  [cite_start]// 문서에서 추출한 4가지 시나리오 데이터 [cite: 59, 65, 76, 89]
+  const scenarios = [
+    {
+      id: 1,
+      name: "단일 치료",
+      patient: "위암 1기 환자",
+      percent: 21,
+      color: "green",
+      treatments: [
+        { name: "암 진단 (진단금 1회 지급)", diagnosis: 2000, treatment: 0 },
+        { name: "내시경 수술 1회 (치료비 1회 지급)", diagnosis: 0, treatment: 1000 }
+      ],
+      total: { diagnosis: 2000, treatment: 1000 },
+      icon: CheckCircle
+    },
+    {
+      id: 2,
+      name: "복합 치료",
+      patient: "유방암 2기, 48세 여성",
+      percent: 55,
+      color: "blue",
+      treatments: [
+        { name: "암 진단 (진단금 1회 지급)", diagnosis: 2000, treatment: 0 },
+        { name: "선행항암화학요법 (1차 치료비)", diagnosis: 0, treatment: 1000 },
+        { name: "유방절제술 (2차 치료비)", diagnosis: 0, treatment: 1000 },
+        { name: "보조항암화학요법 (3차 치료비)", diagnosis: 0, treatment: 1000 },
+        { name: "표적항암제 허셉틴 (4차 치료비)", diagnosis: 0, treatment: 1000 },
+        { name: "방사선 치료 (5차 치료비)", diagnosis: 0, treatment: 1000 }
+      ],
+      total: { diagnosis: 2000, treatment: 5000 }, // 총 5회 치료 지급액 + 진단금
+      icon: TrendingUp
+    },
+    {
+      id: 3,
+      name: "장기 치료",
+      patient: "폐암 3기 환자",
+      percent: 15,
+      color: "orange",
+      treatments: [
+        { name: "암 진단 (진단금 1회 지급)", diagnosis: 2000, treatment: 0 },
+        { name: "동시항암방사선치료 (1년차, 1회)", diagnosis: 0, treatment: 1000 },
+        { name: "공고항암화학요법 (1년차, 2회)", diagnosis: 0, treatment: 1000 },
+        { name: "1세대 표적항암제 투여 (2년차, 3회)", diagnosis: 0, treatment: 1000 },
+        { name: "3세대 표적항암제 변경 (2년차, 4회)", diagnosis: 0, treatment: 1000 },
+        { name: "면역항암제 추가 (3년차, 5회)", diagnosis: 0, treatment: 1000 },
+        { name: "뇌 전이, 정위방사선수술 (3년차, 6회)", diagnosis: 0, treatment: 1000 }
+      ],
+      total: { diagnosis: 2000, treatment: 6000 }, // 총 6회 치료 지급액 + 진단금
+      icon: Clock
+    },
+    {
+      id: 4,
+      name: "재발·전이",
+      patient: "난소암 3기 재발 환자",
+      percent: 9, // (실제 재발/전이 환자 비율)
+      color: "red",
+      treatments: [
+        { name: "초기 진단 (진단금 1회 지급)", diagnosis: 2000, treatment: 0 },
+        { name: "종양감축술 (초기 치료 1회)", diagnosis: 0, treatment: 1000 },
+        { name: "중환자실 입원 (초기 치료 2회, 500만원)", diagnosis: 0, treatment: 500 },
+        { name: "보조항암화학요법 (초기 치료 3회)", diagnosis: 0, treatment: 1000 },
+        { name: "유지항암화학요법 (초기 치료 4회)", diagnosis: 0, treatment: 1000 }, // 초기 치료 4회(3500만원)
+        [cite_start]{ name: "재발 - 2차 항암화학요법 (재발 치료 5회)", diagnosis: 0, treatment: 1000 }, // 진단금은 여기서 0원 [cite: 113]
+        { name: "복수 천자 및 입원 (재발 치료 6회, 500만원)", diagnosis: 0, treatment: 500 },
+        { name: "3차 항암화학요법 (재발 치료 7회)", diagnosis: 0, treatment: 1000 },
+        { name: "표적항암제 병행 (재발 치료 8회)", diagnosis: 0, treatment: 1000 },
+        { name: "통증/복수 관리 입원 (재발 치료 9회, 500만원)", diagnosis: 0, treatment: 500 }
+      ],
+      total: { diagnosis: 2000, treatment: 7500 }, // 총 7.5회 치료 지급액 + 진단금
+      icon: AlertTriangle
+    }
+  ];
 
-        .title {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 5px;
-            font-weight: bold;
+  [cite_start]// 문서 기반 고객 상담 질문 및 답변 데이터 [cite: 5, 6, 120]
+  const consultingQuestions = [
+    {
+      question: "암 진단 시 목돈 2,000만원을 한 번에 받는 '진단금'이 나을까요, 아니면 치료받을 때마다 계속 보장받는 '치료비'가 나을까요?",
+      answers: [
+        {
+          text: "네, 목돈이 좋죠. 단일 치료로 끝나면 진단금이 1,000만원 더 유리합니다. 진단금을 추천합니다.",
+          score: 10, // 21%의 행운에만 기대는 답변
+          feedback: "❌ 21%의 행운에만 베팅하는 위험한 답변입니다. 79%의 환자에게는 매우 부족할 수 있습니다."
+        },
+        {
+          text: "통계를 보시면, 암 환자 100명 중 79명은 여러 치료를 받습니다. 2,000만원으로는 부족할 수 있습니다.",
+          score: 50, // 통계만 언급한 답변
+          feedback: "⚠️ 좋은 시작이지만, 진단금 상품의 결정적 약점인 '재발 시 0원'이라는 리스크를 더 강조해야 합니다."
+        },
+        {
+          text: "중요한 질문이세요. 대다수(79%)는 복합 치료를 받으며 평균 2.27배 더 많은 비용이 듭니다. 결정적으로, 재발 시 진단금은 추가 지급이 0원이지만 치료비는 계속 보장받을 수 있습니다.",
+          [cite_start]score: 100, // 확률, 평균 지급액, 재발 리스크를 모두 설명한 답변 [cite: 197, 200]
+          feedback: "✅ 완벽합니다! 확률, 평균 지급액, 재발 리스크를 모두 설명했습니다. 고객의 가장 큰 걱정을 해소하는 최적의 설득입니다."
         }
+      ]
+    }
+  ];
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 0.9em;
-        }
-
-        .period-section {
-            margin-bottom: 20px;
-        }
-
-        .period-header {
-            background: #6c9bd1;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .period-header.final {
-            background: #82c8a0;
-        }
-
-        .input-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-
-        .input-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .input-label {
-            font-size: 1.1em;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .input-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .amount-input {
-            width: 80px;
-            padding: 10px;
-            font-size: 1.1em;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            text-align: center;
-            -moz-appearance: textfield;
-        }
-
-        /* 브라우저 기본 스피너 완전히 숨기기 */
-        .amount-input::-webkit-outer-spin-button,
-        .amount-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        .amount-input[type=number] {
-            -moz-appearance: textfield;
-        }
-
-        .amount-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-        }
-
-        .unit {
-            font-size: 1em;
-            color: #666;
-            min-width: 30px;
-        }
-
-        .calculate-btn {
-            width: 100%;
-            padding: 16px;
-            font-size: 1.2em;
-            background: #ff8c42;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            margin: 25px 0;
-            font-weight: bold;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .calculate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 140, 66, 0.3);
-        }
-
-        .calculate-btn.calculating {
-            background: #ffd700;
-            transform: scale(1.05);
-            animation: pulse 0.6s ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1.05); }
-            50% { transform: scale(1.1); }
-        }
-
-        .result-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            transform: scale(0.8);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .result-section.show {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .result-label {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }
-
-        .total-amount {
-            font-size: 2.2em;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            word-break: break-all;
-        }
-
-        .won-text {
-            font-size: 1.2em;
-            margin-top: 8px;
-            opacity: 0.9;
-        }
-
-        .breakdown {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.3);
-            font-size: 0.85em;
-            opacity: 0.8;
-            text-align: left;
-            line-height: 1.4;
-        }
-
-        .money-rain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        .money-icon {
-            position: absolute;
-            animation: fall 3s linear infinite;
-            opacity: 0.9;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-100px) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* 숫자 입력 스피너 스타일링 */
-        .amount-input::-webkit-outer-spin-button,
-        .amount-input::-webkit-inner-spin-button {
-            opacity: 1;
-            height: 30px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="title">💰 돈벼락 계산기</h1>
-        <p class="subtitle">주차별 예상 실적을 입력해주세요</p>
-
-        <div class="period-section">
-            <div class="period-header">1~2일</div>
-            <div class="input-row">
-                <span class="input-label">리치 :</span>
-                <div class="input-right">
-                    <input type="number" class="amount-input" id="day2-reach" placeholder="0" min="0" max="999" step="1">
-                    <span class="unit">만원</span>
-                </div>
-            </div>
-            <div class="input-row">
-                <span class="input-label">인보장 :</span>
-                <div class="input-right">
-                    <input type="number" class="amount-input" id="day2-guarantee" placeholder="0" min="0" max="999" step="1">
-                    <span class="unit">만원</span>
-                </div>
-            </div>
+  // 1. 시작 화면
+  const renderStep0 = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-12 text-center">
+        <Heart className="w-20 h-20 mx-auto mb-6 text-red-500 animate-pulse" />
+        <h1 className="text-5xl font-bold mb-4 text-gray-800">FP 암보험 마스터</h1>
+        <p className="text-2xl text-gray-600 mb-8">79%의 현실 설득 전략</p>
+        <div className="bg-blue-50 rounded-xl p-6 mb-8 border-l-4 border-blue-400">
+          <p className="text-xl text-gray-700">
+            <strong>핵심 질문:</strong> 암 진단금 vs 치료비, 고객에게 가장 유리한 선택은?
+          </p>
         </div>
-
-        <div class="period-section">
-            <div class="period-header">3~10일</div>
-            <div class="input-row">
-                <span class="input-label">리치 :</span>
-                <div class="input-right">
-                    <input type="number" class="amount-input" id="day10-reach" placeholder="0" min="0" max="999" step="1">
-                    <span class="unit">만원</span>
-                </div>
-            </div>
-            <div class="input-row">
-                <span class="input-label">인보장 :</span>
-                <div class="input-right">
-                    <input type="number" class="amount-input" id="day10-guarantee" placeholder="0" min="0" max="999" step="1">
-                    <span class="unit">만원</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="period-section">
-            <div class="period-header final">11~16일</div>
-            <div class="input-row">
-                <span class="input-label">인보장 :</span>
-                <div class="input-right">
-                    <input type="number" class="amount-input" id="day16-guarantee" placeholder="0" min="0" max="999" step="1">
-                    <span class="unit">만원</span>
-                </div>
-            </div>
-        </div>
-
-        <button class="calculate-btn" onclick="calculateWithEffect()">💸 시상금 계산하기(클릭)</button>
-
-        <div class="result-section" id="result" style="display: none;">
-            <div class="result-label">총 시상금</div>
-            <div class="total-amount" id="totalAmount">0</div>
-            <div class="won-text">원</div>
-            <div class="breakdown" id="breakdown"></div>
-        </div>
+        <button
+          onClick={() => setStep(1)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg w-full md:w-auto"
+        >
+          학습 시작하기 (FP 훈련) <ArrowRight className="inline ml-2" />
+        </button>
+      </div>
     </div>
+  );
 
-    <div class="money-rain" id="moneyRain"></div>
+  // 2. 확률 예측 게임
+  const renderStep1 = () => (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
+      <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-12">
+        <Users className="w-16 h-16 mx-auto mb-6 text-purple-600" />
+        <h2 className="text-4xl font-bold mb-6 text-center text-gray-800">1단계: 확률 예측 게임</h2>
+        <div className="bg-purple-50 rounded-xl p-8 mb-8">
+          <p className="text-2xl text-center mb-8 text-gray-700">
+            [cite_start]<strong>질문:</strong> 암 환자 100명 중 <span className="text-purple-600 font-bold">단 한 번의 치료</span>로 끝나는 사람은 몇 명일까요? [cite: 10]
+          </p>
+          <div className="mb-8">
+            <div className="text-center mb-4">
+              <p className="text-3xl font-bold text-purple-600 animate-bounce">{userPrediction}명</p>
+            </div>
+            <div className="relative p-4 bg-white rounded-xl shadow-lg border-2 border-purple-300">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={userPrediction}
+                onChange={(e) => setUserPrediction(Number(e.target.value))}
+                className="w-full h-4 bg-purple-200 rounded-lg appearance-none cursor-pointer hover:bg-purple-300 transition-all"
+                style={{
+                  background: `linear-gradient(to right, #9333ea 0%, #9333ea ${userPrediction}%, #e9d5ff ${userPrediction}%, #e9d5ff 100%)`
+                }}
+              />
+            </div>
+            <div className="flex justify-between mt-2 text-base font-semibold text-gray-600">
+              <span>0명</span>
+              <span>100명</span>
+            </div>
+          </div>
 
-    <script>
-        function hideResult() {
-            const result = document.getElementById('result');
-            result.style.display = 'none';
-            result.classList.remove('show');
-        }
+          <div className="grid grid-cols-10 gap-1 mb-8">
+            {[...Array(100)].map((_, i) => (
+              <div
+                key={i}
+                className={`w-full aspect-square rounded ${i < userPrediction ? 'bg-purple-500' : 'bg-gray-200'} transition-all`}
+              />
+            ))}
+          </div>
+        </div>
 
-        // 리치 시상 계산
-        function calculateReachPrize(amount, period) {
-            if (amount < 20) return 0; // 20만원 미만은 시상 없음
-            
-            if (period === 'day2') {
-                if (amount >= 20 && amount < 50) {
-                    return amount * 10000 * 2; // 200%
-                } else if (amount >= 50) {
-                    return amount * 10000 * 2; // 50만원 이상도 200%
-                }
-            } else if (period === 'day10') {
-                if (amount >= 20 && amount < 50) {
-                    return amount * 10000 * 1.5; // 150%
-                } else if (amount >= 50) {
-                    return amount * 10000 * 2; // 200%
-                }
-            }
-            return 0;
-        }
+        <button
+          onClick={() => setStep(2)}
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+        >
+          정답 확인 및 '21%의 함정' 확인하기
+        </button>
+      </div>
+    </div>
+  );
 
-        // 인보장 상품별 시상 계산
-        function calculateGuaranteeProductPrize(amount) {
-            if (amount >= 40) return 300000; // 30만원
-            if (amount >= 30) return 200000; // 20만원
-            if (amount >= 20) return 100000; // 10만원
-            if (amount >= 10) return 50000;  // 5만원
-            return 0;
-        }
+  // 3. 정답 확인 및 통계 분석
+  const renderStep2 = () => {
+    const correctAnswer = 21; [cite_start]// 실제 단일 치료 환자 수 [cite: 12]
+    const difference = Math.abs(userPrediction - correctAnswer);
+    const resultMessage = difference === 0 ? "놀랍습니다! 정확히 맞추셨어요!" : difference <= 10 ? "매우 근접했습니다! 현실을 잘 알고 계시네요." : "대부분이 예상보다 훨씬 적습니다. 통계가 암보험 선택의 기준을 말해줍니다.";
 
-        // 인보장 날짜별 시상 계산
-        function calculateGuaranteeDatePrize(amount, period) {
-            const amountInWon = amount * 10000;
-            
-            if (period === 'day2' || period === 'day10') {
-                return amountInWon * 1.3; // 130%
-            } else if (period === 'day16') {
-                return amountInWon * 1.0; // 100%
-            }
-            return 0;
-        }
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center p-4">
+        <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl p-12">
+          <AlertTriangle className="w-16 h-16 mx-auto mb-6 text-orange-600" />
+          <h2 className="text-4xl font-bold mb-6 text-center text-gray-800">2단계: 충격적인 현실! 21%의 함정</h2>
 
-        // 돈 내리는 애니메이션
-        function createMoneyRain() {
-            const moneyRain = document.getElementById('moneyRain');
-            const moneyIcons = ['💰', '💸', '💵', '💴', '💶', '💷', '🏆', '⭐', '✨', '💎'];
-            
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const money = document.createElement('div');
-                    money.className = 'money-icon';
-                    money.textContent = moneyIcons[Math.floor(Math.random() * moneyIcons.length)];
-                    
-                    // 랜덤 크기 (2배~3배)
-                    const randomSize = (Math.random() * 1 + 2); // 2.0 ~ 3.0
-                    money.style.fontSize = (1.5 * randomSize) + 'em';
-                    
-                    money.style.left = Math.random() * 100 + 'vw';
-                    money.style.animationDelay = Math.random() * 0.5 + 's'; // 0~0.5초로 단축
-                    money.style.animationDuration = (Math.random() * 1 + 2) + 's'; // 2~3초로 단축
-                    
-                    moneyRain.appendChild(money);
-                    
-                    setTimeout(() => {
-                        money.remove();
-                    }, 4000);
-                }, i * 50); // 더 빠른 간격으로 생성
-            }
-        }
+          <div className="text-center mb-8">
+            <p className="text-xl text-gray-600 mb-2">당신의 예측: <strong className="text-3xl text-purple-600">{userPrediction}명</strong></p>
+            [cite_start]<p className="text-xl text-gray-600 mb-4">실제 정답: <strong className="text-5xl font-bold text-red-600">단 21명!</strong> [cite: 12]</p>
+            <p className="text-xl font-semibold text-orange-600">{resultMessage}</p>
+          </div>
 
-        // 효과와 함께 계산하기
-        function calculateWithEffect() {
-            const btn = document.querySelector('.calculate-btn');
-            
-            // 버튼 효과
-            btn.classList.add('calculating');
-            btn.textContent = '💫 계산 중...';
-            
-            // 돈 내리는 효과
-            createMoneyRain();
-            
-            setTimeout(() => {
-                calculateTotal();
-                
-                // 결과 애니메이션
-                const result = document.getElementById('result');
-                result.style.display = 'block';
-                result.classList.add('show');
-                
-                // 버튼 원래대로
-                btn.classList.remove('calculating');
-                btn.textContent = '💸 시상금 계산하기(클릭)';
-                
-                // 결과로 스크롤
-                result.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }, 1000);
-        }
+          <div className="grid grid-cols-2 gap-6 mb-8">
+            <div className="bg-green-50 rounded-xl p-6 border-2 border-green-300">
+              <CheckCircle className="w-12 h-12 text-green-600 mb-3" />
+              <h3 className="text-2xl font-bold text-green-700 mb-2">21%</h3>
+              <p className="text-base text-gray-700">단일 치료로 끝나는 **운 좋은 경우**</p>
+            </div>
+            <div className="bg-red-50 rounded-xl p-6 border-2 border-red-300">
+              <XCircle className="w-12 h-12 text-red-600 mb-3" />
+              <h3 className="text-2xl font-bold text-red-700 mb-2">79%</h3>
+              [cite_start]<p className="text-base text-gray-700">여러 치료를 경험하는 **대다수** [cite: 14]</p>
+            </div>
+          </div>
 
-        function calculateTotal() {
-            // 입력값 가져오기
-            const day2Reach = parseInt(document.getElementById('day2-reach').value) || 0;
-            const day2Guarantee = parseInt(document.getElementById('day2-guarantee').value) || 0;
-            const day10Reach = parseInt(document.getElementById('day10-reach').value) || 0;
-            const day10Guarantee = parseInt(document.getElementById('day10-guarantee').value) || 0;
-            const day16Guarantee = parseInt(document.getElementById('day16-guarantee').value) || 0;
-            
-            let totalPrize = 0;
-            let breakdown = [];
-            
-            // 리치 시상 계산
-            if (day2Reach > 0) {
-                const prize = calculateReachPrize(day2Reach, 'day2');
-                if (prize > 0) {
-                    totalPrize += prize;
-                    breakdown.push(`1~2일 리치: ${prize.toLocaleString()}원 (${day2Reach}만원 × 200%)`);
-                }
-            }
-            
-            if (day10Reach > 0) {
-                const prize = calculateReachPrize(day10Reach, 'day10');
-                if (prize > 0) {
-                    totalPrize += prize;
-                    const rate = day10Reach > 50 ? '200%' : '150%';
-                    breakdown.push(`3~10일 리치: ${prize.toLocaleString()}원 (${day10Reach}만원 × ${rate})`);
-                }
-            }
-            
-            // 인보장 시상 계산 (1~2일)
-            if (day2Guarantee > 0) {
-                const productPrize = calculateGuaranteeProductPrize(day2Guarantee);
-                const datePrize = calculateGuaranteeDatePrize(day2Guarantee, 'day2');
-                
-                if (productPrize > 0 || datePrize > 0) {
-                    totalPrize += productPrize + datePrize;
-                    breakdown.push(`1~2일 인보장: ${(productPrize + datePrize).toLocaleString()}원`);
-                    breakdown.push(`  - 상품별: ${productPrize.toLocaleString()}원`);
-                    breakdown.push(`  - 날짜별: ${datePrize.toLocaleString()}원 (${day2Guarantee}만원 × 130%)`);
-                }
-            }
-            
-            // 인보장 시상 계산 (3~10일)
-            if (day10Guarantee > 0) {
-                const productPrize = calculateGuaranteeProductPrize(day10Guarantee);
-                const datePrize = calculateGuaranteeDatePrize(day10Guarantee, 'day10');
-                
-                if (productPrize > 0 || datePrize > 0) {
-                    totalPrize += productPrize + datePrize;
-                    breakdown.push(`3~10일 인보장: ${(productPrize + datePrize).toLocaleString()}원`);
-                    breakdown.push(`  - 상품별: ${productPrize.toLocaleString()}원`);
-                    breakdown.push(`  - 날짜별: ${datePrize.toLocaleString()}원 (${day10Guarantee}만원 × 130%)`);
-                }
-            }
-            
-            // 인보장 시상 계산 (11~16일)
-            if (day16Guarantee > 0) {
-                const productPrize = calculateGuaranteeProductPrize(day16Guarantee);
-                const datePrize = calculateGuaranteeDatePrize(day16Guarantee, 'day16');
-                
-                if (productPrize > 0 || datePrize > 0) {
-                    totalPrize += productPrize + datePrize;
-                    breakdown.push(`11~16일 인보장: ${(productPrize + datePrize).toLocaleString()}원`);
-                    breakdown.push(`  - 상품별: ${productPrize.toLocaleString()}원`);
-                    breakdown.push(`  - 날짜별: ${datePrize.toLocaleString()}원 (${day16Guarantee}만원 × 100%)`);
-                }
-            }
-            
-            // 결과 표시
-            document.getElementById('totalAmount').textContent = totalPrize.toLocaleString();
-            document.getElementById('breakdown').innerHTML = breakdown.length > 0 ? breakdown.join('<br>') : '입력된 금액이 없거나 시상 조건에 해당하지 않습니다.';
-        }
+          <div className="bg-yellow-50 rounded-xl p-6 mb-8 border-l-4 border-yellow-400">
+            <p className="text-lg text-gray-700">
+              [cite_start]암보험 선택은 **'내가 21%에 속할 것인가, 아니면 79%에 속할 것인가'**에 대한 확률 게임입니다. [cite: 30]
+            </p>
+          </div>
 
-        // 엔터 키로도 계산할 수 있도록
-        document.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                calculateWithEffect();
-            }
-        });
+          <button
+            onClick={() => setStep(3)}
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+          >
+            79%의 현실, 시나리오별 비교 체험하기 <ArrowRight className="inline ml-2" />
+          </button>
+        </div>
+      </div>
+    );
+  };
 
-        // 실시간으로 입력값이 변경될 때마다 자동 계산
-        const inputs = ['day2-reach', 'day2-guarantee', 'day10-reach', 'day10-guarantee', 'day16-guarantee'];
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', function() {
-                // 입력할 때는 결과를 숨김
-                const result = document.getElementById('result');
-                result.style.display = 'none';
-                result.classList.remove('show');
-            });
-        });
-    </script>
-</body>
-</html>
+  // 4. 시나리오 선택 화면
+  const renderStep3 = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-100 p-4">
+      <div className="max-w-6xl mx-auto py-12">
+        <div className="bg-white rounded-3xl shadow-2xl p-12">
+          <BarChart3 className="w-16 h-16 mx-auto mb-6 text-blue-600" />
+          <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">3단계: 4가지 시나리오 체험</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {scenarios.map((scenario) => {
+              const Icon = scenario.icon;
+              const colors = {
+                green: 'bg-green-50 border-green-300 hover:bg-green-100 text-green-700',
+                blue: 'bg-blue-50 border-blue-300 hover:bg-blue-100 text-blue-700',
+                orange: 'bg-orange-50 border-orange-300 hover:bg-orange-100 text-orange-700',
+                red: 'bg-red-50 border-red-300 hover:bg-red-100 text-red-700'
+              };
+
+              return (
+                <button
+                  key={scenario.id}
+                  onClick={() => {
+                    setSelectedScenario(scenario);
+                    setScenarioProgress(0);
+                    setStep(4);
+                  }}
+                  className={`${colors[scenario.color]} rounded-xl p-6 border-2 transition-all transform hover:scale-105 text-left`}
+                >
+                  <Icon className={`w-12 h-12 mb-4 ${scenario.color === 'green' ? 'text-green-600' : scenario.color === 'blue' ? 'text-blue-600' : scenario.color === 'orange' ? 'text-orange-600' : 'text-red-600'}`} />
+                  <h3 className="text-2xl font-bold mb-2">{scenario.name} ({scenario.percent}%)</h3>
+                  <p className="text-base text-gray-600 mb-4">{scenario.patient}</p>
+                  <div className="flex justify-between items-center text-sm font-semibold">
+                    <span>진단금 vs 치료비 금액 비교 시작</span>
+                    <ArrowRight className="w-6 h-6" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // 5. 시나리오 진행 화면
+  const renderStep4 = () => {
+    if (!selectedScenario) return null;
+
+    const currentTreatment = selectedScenario.treatments[scenarioProgress];
+    [cite_start]// 누적 지급액 계산 [cite: 116, 117]
+    const diagnosisTotal = selectedScenario.treatments.slice(0, scenarioProgress + 1).reduce((sum, t) => sum + t.diagnosis, 0);
+    const treatmentTotal = selectedScenario.treatments.slice(0, scenarioProgress + 1).reduce((sum, t) => sum + t.treatment, 0);
+
+    const isComplete = scenarioProgress >= selectedScenario.treatments.length - 1;
+
+    [cite_start]// 진단금 상품의 경우, 첫 번째 '암 진단' 항목 이후에는 0원 지급 [cite: 113]
+    const currentDiagnosisPayment = currentTreatment.diagnosis > 0 ? currentTreatment.diagnosis : 0;
+    [cite_start]// 치료비 상품은 매 치료 행위마다 지급 [cite: 114]
+    const currentTreatmentPayment = currentTreatment.treatment;
+
+    const comparisonMessage =
+      isComplete
+        ? treatmentTotal > diagnosisTotal
+          ? `치료비가 ${(treatmentTotal - diagnosisTotal).toLocaleString()}만원 더 유리합니다! (약 ${(treatmentTotal / diagnosisTotal).toFixed(2)}배)`
+          : `진단금이 ${(diagnosisTotal - treatmentTotal).toLocaleString()}만원 더 유리합니다.`
+        : "다음 치료 단계를 진행하며 누적 수령액을 비교해보세요.";
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4">
+        <div className="max-w-5xl mx-auto py-12">
+          <div className="bg-white rounded-3xl shadow-2xl p-12">
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-3xl font-bold text-gray-800">{selectedScenario.name} 시나리오</h2>
+                <span className="text-xl text-gray-600">{selectedScenario.patient}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div
+                  className="bg-blue-600 h-3 rounded-full transition-all duration-500"
+                  style={{ width: `${((scenarioProgress + 1) / selectedScenario.treatments.length) * 100}%` }}
+                />
+              </div>
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                치료 단계 {scenarioProgress + 1} / {selectedScenario.treatments.length}
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-8">
+              <h3 className="text-2xl font-bold mb-6 text-center">{currentTreatment.name} 단계</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-red-50 rounded-xl p-6 border-2 border-red-200 text-center">
+                  <DollarSign className="w-8 h-8 text-red-600 mx-auto mb-3" />
+                  [cite_start]<h4 className="text-xl font-bold text-red-700">진단금 상품 (2,000만원) [cite: 5, 56]</h4>
+                  <p className="text-4xl font-bold text-red-600 mt-3">{diagnosisTotal.toLocaleString()}만원</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    (이번 단계 지급액: {currentDiagnosisPayment > 0 ? `${currentDiagnosisPayment.toLocaleString()[cite_start]}만원` : '0원 [cite: 113]'})
+                  </p>
+                </div>
+
+                <div className="bg-blue-50 rounded-xl p-6 border-2 border-blue-200 text-center">
+                  <Shield className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+                  [cite_start]<h4 className="text-xl font-bold text-blue-700">치료비 상품 (항목당 1,000만원 가정) [cite: 56]</h4>
+                  <p className="text-4xl font-bold text-blue-600 mt-3">{treatmentTotal.toLocaleString()}만원</p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    (이번 단계 지급액: +{currentTreatmentPayment.toLocaleString()[cite_start]}만원 [cite: 114])
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {isComplete && (
+              <div className="bg-yellow-100 rounded-xl p-6 mb-8 border-l-4 border-yellow-500 text-center">
+                <h4 className="text-2xl font-bold mb-3">최종 시나리오 결과</h4>
+                <p className="text-xl font-semibold text-orange-600">{comparisonMessage}</p>
+              </div>
+            )}
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setStep(3)}
+                className="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all"
+              >
+                다른 시나리오 보기
+              </button>
+              {!isComplete && (
+                <button
+                  onClick={() => setScenarioProgress(scenarioProgress + 1)}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+                >
+                  다음 치료 단계 <ArrowRight className="inline ml-2" />
+                </button>
+              )}
+              {isComplete && (
+                <button
+                  onClick={() => setStep(5)}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+                >
+                  4단계: 전체 비교 분석 및 최종 결론 보기
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 6. 전체 비교 및 결론
+  const renderStep5 = () => {
+    const avgDiagnosis = 2000; [cite_start]// 진단금 상품 평균 수령액 [cite: 150]
+    const avgTreatment = 4535; [cite_start]// 치료비 상품 평균 수령액 (4,535만원) [cite: 157]
+    const differenceRatio = (avgTreatment / avgDiagnosis).toFixed(2); [cite_start]// 2.27배 [cite: 159]
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4">
+        <div className="max-w-6xl mx-auto py-12">
+          <div className="bg-white rounded-3xl shadow-2xl p-12">
+            <Award className="w-16 h-16 mx-auto mb-6 text-green-600" />
+            <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">4단계: 전체 비교 분석 및 최종 결론</h2>
+
+            {/* 평균 수령액 비교 */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 mb-8">
+              [cite_start]<h3 className="text-2xl font-bold mb-6 text-center text-blue-800">평균 수령액, {differenceRatio}배의 차이 [cite: 159]</h3>
+              <div className="grid grid-cols-2 gap-8 mb-6">
+                <div className="text-center">
+                  <p className="text-base text-gray-600 mb-2">진단금 평균 수령액</p>
+                  [cite_start]<p className="text-5xl font-bold text-red-600">{avgDiagnosis.toLocaleString()}만원 [cite: 150]</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-base text-gray-600 mb-2">치료비 평균 수령액</p>
+                  [cite_start]<p className="text-5xl font-bold text-blue-600">{avgTreatment.toLocaleString()}만원 [cite: 157]</p>
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-green-600 text-center">
+                [cite_start]치료비가 평균 {(avgTreatment - avgDiagnosis).toLocaleString()}만원 더 유리합니다! [cite: 159]
+              </p>
+            </div>
+
+            {/* 재발 리스크 비교 */}
+            <div className="bg-red-50 rounded-xl p-8 mb-8 border-l-4 border-red-400">
+              <h3 className="text-2xl font-bold mb-6 text-red-800">⚠️ 결정적 차이: 재발 리스크 관리</h3>
+              <div className="grid grid-cols-2 gap-8 text-center">
+                <div>
+                  [cite_start]<p className="text-xl font-bold text-gray-600 mb-3">진단금 상품 (고위험 선택) [cite: 180]</p>
+                  <p className="text-4xl font-bold text-red-600">0원</p>
+                  [cite_start]<p className="text-base text-gray-700 mt-2">재발 시 추가 지급 없음 [cite: 113]</p>
+                  <p className="text-sm text-gray-500">79%에 해당하면 보장 소진</p>
+                </div>
+                <div>
+                  [cite_start]<p className="text-xl font-bold text-gray-600 mb-3">치료비 상품 (저위험 선택) [cite: 181]</p>
+                  <p className="text-4xl font-bold text-blue-600">계속 지급</p>
+                  [cite_start]<p className="text-base text-gray-700 mt-2">재발해도 치료마다 보장 [cite: 114]</p>
+                  <p className="text-sm text-gray-500">치료가 끝날 때까지 보장</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setStep(6)}
+              className="w-full bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+            >
+              5단계: 고객 상담 롤플레이 체험하기 <ArrowRight className="inline ml-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 7. 고객 상담 롤플레이
+  const renderStep6 = () => {
+    const question = consultingQuestions[0];
+    const isAnswered = consultingAnswer !== null;
+    const selectedAnswerData = isAnswered ? question.answers[consultingAnswer] : null;
+
+    // 롤플레이 시뮬레이션 완료 시 뱃지 획득 메시지 설정
+    const badgeMessage = isAnswered && selectedAnswerData.score === 100 ? "⭐ 최우수 FP 배지 획득! 고객을 합리적으로 설득했습니다." : isAnswered ? "아쉽습니다! 핵심을 놓치지 않도록 다시 복습해보세요." : "답변을 선택해 주세요.";
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-100 p-4">
+        <div className="max-w-4xl mx-auto py-12">
+          <div className="bg-white rounded-3xl shadow-2xl p-12">
+            <Users className="w-16 h-16 mx-auto mb-6 text-orange-600" />
+            <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">5단계: 고객 상담 롤플레이</h2>
+
+            <div className="bg-blue-50 rounded-xl p-6 mb-8 border-l-4 border-blue-400">
+              <p className="text-xl font-semibold mb-2 text-blue-800">고객의 질문</p>
+              [cite_start]<p className="text-2xl text-gray-800">"{question.question}" [cite: 5, 6]</p>
+            </div>
+
+            <p className="text-center text-xl font-semibold text-gray-600 mb-6">당신이라면 어떻게 설득하시겠습니까?</p>
+
+            <div className="space-y-4 mb-8">
+              {question.answers.map((answer, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setConsultingAnswer(idx)}
+                  disabled={isAnswered}
+                  className={`w-full text-left p-6 rounded-xl border-2 transition-all ${
+                    isAnswered && consultingAnswer === idx
+                      ? answer.score === 100
+                        ? 'bg-green-50 border-green-400 shadow-md'
+                        : answer.score === 50
+                          ? 'bg-yellow-50 border-yellow-400 shadow-md'
+                          : 'bg-red-50 border-red-400 shadow-md'
+                      : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
+                  }`}
+                >
+                  <p className="text-lg">{answer.text}</p>
+                  {isAnswered && consultingAnswer === idx && (
+                    <div className="mt-4 pt-4 border-t border-gray-300">
+                      <p className="text-lg font-semibold text-gray-800 mb-2">{answer.feedback}</p>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full ${answer.score === 100 ? 'bg-green-500' : answer.score === 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                          style={{ width: `${answer.score}%` }}
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">설득 점수: {answer.score}점</p>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="text-center mb-8">
+              <p className={`text-2xl font-bold ${selectedAnswerData?.score === 100 ? 'text-green-600' : isAnswered ? 'text-red-600' : 'text-gray-500'}`}>{badgeMessage}</p>
+            </div>
+
+            {isAnswered && (
+              <button
+                onClick={() => setStep(7)}
+                className="w-full bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg"
+              >
+                모든 학습 완료! 최종 요약 보기
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // 8. 학습 완료 및 최종 요약
+  const renderStep7 = () => (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 p-4">
+      <div className="max-w-5xl mx-auto py-12">
+        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
+          <Award className="w-24 h-24 mx-auto mb-6 text-indigo-600" />
+          <h2 className="text-5xl font-bold mb-8 text-gray-800">학습 완료! 축하드립니다 🎉</h2>
+
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 mb-8 border-l-8 border-green-500">
+            <h3 className="text-2xl font-bold mb-4 text-green-800">최종 설득 핵심 요약</h3>
+            <div className="space-y-4 text-left text-lg">
+              [cite_start]<p><CheckCircle className="inline w-5 h-5 text-green-600 mr-2" /> **확률:** 21%의 행운이 아닌 **79%의 현실**에 대비해야 합니다. [cite: 186]</p>
+              [cite_start]<p><CheckCircle className="inline w-5 h-5 text-green-600 mr-2" /> **금액:** 치료비 상품이 평균 **2.27배(4,535만원)** 더 큰 기대값을 보장합니다. [cite: 157, 159]</p>
+              [cite_start]<p><CheckCircle className="inline w-5 h-5 text-green-600 mr-2" /> **리스크:** 재발 시 진단금은 **0원**이지만, 치료비는 **치료가 끝날 때까지** 보장됩니다. [cite: 113, 114, 200]</p>
+            </div>
+            <p className="text-2xl font-bold mt-6 text-blue-700">
+              [cite_start]👉 치료비 중심의 보험이 훨씬 더 합리적이고 안전한 선택입니다. [cite: 200]
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              // 초기 상태로 리셋
+              setStep(0);
+              setUserPrediction(50);
+              setSelectedScenario(null);
+              setScenarioProgress(0);
+              setConsultingAnswer(null);
+            }}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-full text-xl font-semibold transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
+          >
+            <RefreshCw className="mr-3 w-6 h-6" /> 처음부터 다시 학습하기
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // 단계별 렌더링 함수 배열
+  const steps = [
+    renderStep0,
+    renderStep1,
+    renderStep2,
+    renderStep3,
+    renderStep4,
+    renderStep5,
+    renderStep6,
+    renderStep7
+  ];
+
+  return (
+    <div className="font-sans">
+      {steps[step]()}
+
+      {/* 하단 진행 표시줄 */}
+      {step > 0 && step < 7 && (
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-xl px-6 py-3 border border-gray-200">
+          <div className="flex items-center gap-2">
+            {[1, 2, 3, 4, 5, 6, 7].map((s) => (
+              <div
+                key={s}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${s <= step ? 'bg-blue-600 scale-110' : 'bg-gray-300'}`}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
