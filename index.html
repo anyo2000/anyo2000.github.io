@@ -523,11 +523,30 @@
             font-size: 0.95em;
         }
 
-        .timeline-item .cost {
-            margin-top: 6px;
-            color: #667eea;
+        /* 진단금/치료비 구분 스타일 */
+        .timeline-item .payment-info {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .payment-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 1em;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+
+        .payment-badge.diagnosis {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            color: #2d3748;
+        }
+
+        .payment-badge.treatment {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
         }
 
         .cost-comparison {
@@ -1035,4 +1054,84 @@
                     <canvas id="rouletteCanvas" width="300" height="300"></canvas>
                 </div>
 
-                <button class="spin-button" id="spinButton" onclick="spi
+                <button class="spin-button" id="spinButton" onclick="spinRoulette()">
+                    룰렛 돌리기
+                </button>
+
+                <div class="comparison-table">
+                    <h4>💰 누적 보장 금액 비교</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>진단금</th>
+                                <th>치료비</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="label-cell">총 시도</td>
+                                <td id="diagnosisSpins" class="value-cell">0회</td>
+                                <td id="treatmentSpins" class="value-cell">0회</td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">누적액</td>
+                                <td id="diagnosisTotal" class="value-cell">0원</td>
+                                <td id="treatmentTotal" class="value-cell highlight">0원</td>
+                            </tr>
+                            <tr>
+                                <td class="label-cell">1회평균</td>
+                                <td id="diagnosisAvg" class="value-cell">-</td>
+                                <td id="treatmentAvg" class="value-cell highlight">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="comparisonResult"></div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn-secondary" onclick="goToStep(3)">← 돌아가기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 결과 모달 -->
+    <div id="resultModal" class="result-modal">
+        <div class="result-content" id="resultContent">
+            <h3 id="resultTitle"></h3>
+            <div id="resultDescription"></div>
+            <div class="result-amount" id="resultAmount"></div>
+            <p id="resultExplanation"></p>
+            <button class="try-again-button" onclick="closeModal()">다시 돌리기</button>
+            <button class="close-button" onclick="goToStep(3)">처음으로</button>
+        </div>
+    </div>
+
+    <script>
+        let userGuess = 50;
+        let totalSpins = 0;
+        let diagnosisTotalAmount = 0;
+        let treatmentTotalAmount = 0;
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        const treatmentData = {
+            single: {
+                title: '🍀 단일 치료 (21%)',
+                subtitle: '위암 1기 - 수술 한 번으로 끝나는 경우',
+                timeline: [
+                    { stage: '진단', content: '위암 1기 초기 발견', diagnosisCost: 2000, treatmentCost: 0 },
+                    { stage: '치료', content: '내시경 수술 1회', diagnosisCost: 0, treatmentCost: 1000 }
+                ],
+                diagnosisTotal: 2000,
+                treatmentTotal: 1000,
+                difference: -1000,
+                differenceText: '진단금이 1,000만원 더 유리합니다'
+            },
+            complex: {
+                title: '💊 복합 치료 (55%)',
+                subtitle: '유방암 2기 - 여러 치료를 병행하는 경우',
+                timeline: [
+                    { stage: '진단', content: '유방암 2기 발견', diagnosisCost: 2000, treatmentCost: 0 },
+                    { s
