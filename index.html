@@ -14,41 +14,85 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
-            color: #1a1a2e;
+            color: #2d3748;
             overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* Step 0: 시작 화면 */
-        .step-0 {
+        /* 공통 컨테이너 스타일 */
+        .page-container {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .start-card {
+        .card {
             background: white;
             border-radius: 20px;
             padding: 40px 30px;
             max-width: 500px;
             width: 100%;
-            text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        .start-card h1 {
-            font-size: 1.8em;
-            margin-bottom: 30px;
+        /* 공통 타이포그래피 */
+        h1, h2 {
+            font-size: 1.6em;
             color: #2d3748;
             line-height: 1.4;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
+        .subtitle {
+            font-size: 1em;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* 공통 버튼 스타일 */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.97);
+        }
+
+        /* Step 0: 시작 화면 */
         .comparison-boxes {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -72,90 +116,49 @@
         }
 
         .comparison-box .label {
-            font-size: 0.9em;
+            font-size: 0.95em;
             margin-bottom: 10px;
             font-weight: 600;
         }
 
         .comparison-box .amount {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: 700;
             margin-bottom: 5px;
         }
 
         .comparison-box .sub {
-            font-size: 0.8em;
+            font-size: 0.85em;
             opacity: 0.9;
         }
 
         .vs-text {
-            font-size: 1.5em;
+            font-size: 1.4em;
             font-weight: 700;
             color: #667eea;
             margin: 20px 0;
+            text-align: center;
         }
 
         .question-text {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #4a5568;
             margin-bottom: 30px;
             font-weight: 600;
-        }
-
-        .start-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .start-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Step 1: 확률 예측 게임 */
-        .step-1 {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .prediction-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 25px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .prediction-card h2 {
-            font-size: 1.8em;
             text-align: center;
-            margin-bottom: 25px;
-            color: #2d3748;
         }
 
+        /* Step 1: 확률 예측 */
         .question-box {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
             padding: 25px 20px;
             border-radius: 15px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
         .question-box p {
-            font-size: 1.2em;
+            font-size: 1.1em;
             line-height: 1.6;
             color: #2d3748;
             font-weight: 600;
@@ -163,47 +166,32 @@
 
         .question-box .highlight {
             color: #e74c3c;
-            font-size: 1.4em;
+            font-size: 1.3em;
             font-weight: 700;
         }
 
         .slider-instruction {
             text-align: center;
             margin-bottom: 25px;
-            padding: 20px;
+            padding: 18px;
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
             border-radius: 15px;
             animation: pulse 2s infinite;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
         }
 
         @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4); }
-            50% { transform: scale(1.03); box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .slider-instruction p {
             color: white;
-            font-size: 1.4em;
+            font-size: 1.2em;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
         }
 
         .slider-instruction .emoji {
-            font-size: 1.8em;
-            animation: bounce 1s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .slider-container {
-            margin-bottom: 30px;
+            font-size: 1.5em;
         }
 
         .slider-values {
@@ -214,23 +202,23 @@
         }
 
         .slider-values .current {
-            font-size: 3em;
+            font-size: 2.5em;
             font-weight: 700;
             color: #e74c3c;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .slider-wrapper {
-            padding: 25px;
+            padding: 20px;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border: 4px solid #ff6b6b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid #ff6b6b;
+            margin-bottom: 20px;
         }
 
         input[type="range"] {
             width: 100%;
-            height: 15px;
+            height: 12px;
             border-radius: 10px;
             appearance: none;
             cursor: pointer;
@@ -238,21 +226,12 @@
 
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: 35px;
-            height: 35px;
+            width: 32px;
+            height: 32px;
             background: #e74c3c;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.6);
-            border: 3px solid white;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 35px;
-            height: 35px;
-            background: #e74c3c;
-            border-radius: 50%;
-            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.5);
             border: 3px solid white;
         }
 
@@ -265,94 +244,47 @@
 
         .person {
             aspect-ratio: 1;
-            border-radius: 5px;
-            transition: all 0.3s ease;
+            border-radius: 4px;
+            transition: all 0.2s ease;
         }
 
-        .person.selected {
-            background: #e74c3c;
-        }
+        .person.selected { background: #e74c3c; }
+        .person.unselected { background: #e0e0e0; }
 
-        .person.unselected {
-            background: #e0e0e0;
-        }
-
-        .confirm-button {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-        }
-
-        .confirm-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Step 2: 충격적인 현실 */
-        .step-2 {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .result-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 25px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .result-card h2 {
-            font-size: 1.8em;
-            text-align: center;
-            margin-bottom: 25px;
-            color: #2d3748;
-        }
-
+        /* Step 2: 결과 */
         .prediction-result {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .prediction-result .your-guess {
             font-size: 1em;
             color: #4a5568;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .prediction-result .guess-value {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: 700;
             color: #667eea;
+            margin-bottom: 15px;
         }
 
         .prediction-result .answer-label {
             font-size: 1em;
             color: #4a5568;
-            margin: 20px 0 10px;
+            margin-bottom: 8px;
         }
 
         .prediction-result .answer-value {
-            font-size: 3.5em;
+            font-size: 3em;
             font-weight: 700;
             color: #e74c3c;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .prediction-result .difference {
-            font-size: 1.1em;
+            font-size: 1.05em;
             color: #e67e22;
             font-weight: 600;
         }
@@ -360,12 +292,12 @@
         .stats-boxes {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-box {
-            padding: 25px 15px;
+            padding: 22px 15px;
             border-radius: 15px;
             text-align: center;
             border: 3px solid;
@@ -382,103 +314,54 @@
         }
 
         .stat-box .icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 8px;
         }
 
         .stat-box .percent {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: 700;
             margin-bottom: 5px;
         }
 
         .stat-box .label {
-            font-size: 0.95em;
+            font-size: 0.9em;
             color: #2d3748;
         }
 
         .info-box {
             background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
-            padding: 20px;
+            padding: 18px;
             border-radius: 12px;
-            margin-bottom: 25px;
-            border-left: 5px solid #e67e22;
+            margin-bottom: 20px;
+            border-left: 4px solid #e67e22;
         }
 
         .info-box p {
             color: #2d3748;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 0.95em;
         }
 
-        .next-button {
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 50px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(230, 126, 34, 0.4);
-        }
-
-        .next-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Step 3: 4가지 시나리오 */
-        .step-3 {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .scenarios-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px 20px;
-            max-width: 700px;
-            margin: 0 auto;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-
-        .scenarios-card h2 {
-            font-size: 1.8em;
-            text-align: center;
-            margin-bottom: 15px;
-            color: #2d3748;
-        }
-
-        .scenarios-card .subtitle {
-            text-align: center;
-            color: #4a5568;
-            margin-bottom: 30px;
-            font-size: 1em;
-        }
-
+        /* Step 3: 시나리오 선택 */
         .scenario-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
 
         .scenario-button {
             background: white;
             border: 3px solid;
             border-radius: 15px;
-            padding: 25px 15px;
+            padding: 22px 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
         }
 
         .scenario-button:active {
-            transform: scale(0.95);
+            transform: scale(0.96);
         }
 
         .scenario-button.green {
@@ -502,95 +385,55 @@
         }
 
         .scenario-button .icon {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 8px;
         }
 
         .scenario-button .title {
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #2d3748;
         }
 
         .scenario-button .percent {
-            font-size: 1.8em;
+            font-size: 1.6em;
             font-weight: 700;
-            margin: 10px 0;
+            margin: 8px 0;
             color: #667eea;
         }
 
         .scenario-button .desc {
             font-size: 0.85em;
             color: #4a5568;
-            line-height: 1.4;
+            line-height: 1.3;
         }
 
-        /* Step 4: 상세 치료 과정 (모바일 스타일) */
-        .step-4 {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .detail-container {
-            max-width: 100%;
-            background: white;
-            border-radius: 15px;
-            padding: 20px 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin: 0 auto;
-        }
-
+        /* Step 4: 상세 결과 (한번에 보기) */
         .detail-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px 15px;
-            border-radius: 12px;
+            padding: 20px 18px;
+            border-radius: 15px;
             margin-bottom: 20px;
         }
 
         .detail-header h2 {
             font-size: 1.3em;
+            color: white;
             margin-bottom: 8px;
-            line-height: 1.3;
+            text-align: left;
         }
 
         .detail-header p {
-            font-size: 0.9em;
+            font-size: 0.95em;
             opacity: 0.95;
-        }
-
-        .progress-bar-container {
-            margin-bottom: 20px;
-        }
-
-        .progress-label {
-            text-align: center;
-            font-size: 0.85em;
-            color: #4a5568;
-            margin-bottom: 8px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.5s ease;
+            text-align: left;
         }
 
         .treatment-timeline {
             position: relative;
-            padding-left: 30px;
+            padding-left: 28px;
             margin: 20px 0;
         }
 
@@ -606,18 +449,18 @@
 
         .timeline-item {
             position: relative;
-            margin-bottom: 20px;
-            padding: 15px;
+            margin-bottom: 16px;
+            padding: 14px;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 0.9em;
         }
 
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -26px;
-            top: 18px;
+            left: -24px;
+            top: 16px;
             width: 10px;
             height: 10px;
             background: #667eea;
@@ -627,12 +470,13 @@
 
         .timeline-item strong {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: #2d3748;
+            font-size: 0.95em;
         }
 
         .timeline-item .cost {
-            margin-top: 8px;
+            margin-top: 6px;
             color: #667eea;
             font-weight: 600;
             font-size: 1em;
@@ -646,7 +490,7 @@
         }
 
         .cost-box {
-            padding: 15px 10px;
+            padding: 18px 12px;
             border-radius: 12px;
             text-align: center;
         }
@@ -663,13 +507,13 @@
         .cost-box h4 {
             font-size: 0.95em;
             margin-bottom: 10px;
+            font-weight: 600;
         }
 
         .cost-box .amount {
             font-size: 1.8em;
             font-weight: 700;
             margin-bottom: 5px;
-            word-break: keep-all;
         }
 
         .cost-box p {
@@ -677,16 +521,19 @@
         }
 
         .difference {
-            background: #2ecc71;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
-            margin-top: 15px;
-            font-size: 1.1em;
+            margin: 20px 0;
+            font-size: 1.05em;
             font-weight: 600;
             line-height: 1.4;
-            display: none;
+        }
+
+        .difference.negative {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
         }
 
         .action-buttons {
@@ -695,57 +542,27 @@
             margin-top: 20px;
         }
 
-        .back-button, .continue-button {
+        .action-buttons .btn-secondary {
             flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .back-button {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .continue-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .back-button:active, .continue-button:active {
-            transform: scale(0.95);
         }
 
         @media (max-width: 360px) {
-            .start-card h1,
-            .prediction-card h2,
-            .result-card h2,
-            .scenarios-card h2 {
-                font-size: 1.5em;
+            h1, h2 {
+                font-size: 1.4em;
             }
-
             .comparison-box .amount {
-                font-size: 1.7em;
+                font-size: 1.6em;
             }
-
             .slider-values .current {
-                font-size: 2.5em;
-            }
-
-            .slider-instruction p {
-                font-size: 1.1em;
+                font-size: 2.2em;
             }
         }
     </style>
 </head>
 <body>
     <!-- Step 0: 시작 화면 -->
-    <div id="step0" class="step-0">
-        <div class="start-card">
+    <div id="step0" class="page-container">
+        <div class="card">
             <h1>🏥 암보험,<br>무엇이 더 유리할까요?</h1>
             
             <div class="comparison-boxes">
@@ -767,15 +584,15 @@
                 어떤 것이 더 유리할까요?
             </div>
 
-            <button class="start-button" onclick="goToStep(1)">
+            <button class="btn-primary" onclick="goToStep(1)">
                 학습 시작하기 →
             </button>
         </div>
     </div>
 
     <!-- Step 1: 확률 예측 게임 -->
-    <div id="step1" class="step-1 hidden">
-        <div class="prediction-card">
+    <div id="step1" class="page-container hidden">
+        <div class="card">
             <h2>📊 확률 예측 게임</h2>
             
             <div class="question-box">
@@ -795,34 +612,28 @@
                 </p>
             </div>
 
-            <div class="slider-container">
-                <div class="slider-values">
-                    <span style="color: #95a5a6;">0명</span>
-                    <span class="current" id="sliderValue">50명</span>
-                    <span style="color: #95a5a6;">100명</span>
-                </div>
+            <div class="slider-values">
+                <span style="color: #95a5a6; font-size: 0.9em;">0명</span>
+                <span class="current" id="sliderValue">50명</span>
+                <span style="color: #95a5a6; font-size: 0.9em;">100명</span>
+            </div>
 
-                <div class="slider-wrapper">
-                    <input type="range" 
-                           id="predictionSlider" 
-                           min="0" 
-                           max="100" 
-                           value="50"
-                           oninput="updatePrediction(this.value)">
-                </div>
+            <div class="slider-wrapper">
+                <input type="range" id="predictionSlider" min="0" max="100" value="50"
+                       oninput="updatePrediction(this.value)">
             </div>
 
             <div class="people-grid" id="peopleGrid"></div>
 
-            <button class="confirm-button" onclick="goToStep(2)">
+            <button class="btn-primary" onclick="goToStep(2)">
                 정답 확인하기
             </button>
         </div>
     </div>
 
     <!-- Step 2: 충격적인 현실 -->
-    <div id="step2" class="step-2 hidden">
-        <div class="result-card">
+    <div id="step2" class="page-container hidden">
+        <div class="card">
             <h2>😱 충격적인 현실</h2>
 
             <div class="prediction-result">
@@ -855,15 +666,15 @@
                 </p>
             </div>
 
-            <button class="next-button" onclick="goToStep(3)">
+            <button class="btn-primary" onclick="goToStep(3)">
                 79%의 현실 자세히 보기 →
             </button>
         </div>
     </div>
 
     <!-- Step 3: 4가지 시나리오 -->
-    <div id="step3" class="step-3 hidden">
-        <div class="scenarios-card">
+    <div id="step3" class="page-container hidden">
+        <div class="card">
             <h2>🔍 4가지 시나리오 체험</h2>
             <p class="subtitle">실제 환자 케이스를 선택해서 비교해보세요</p>
 
@@ -899,19 +710,12 @@
         </div>
     </div>
 
-    <!-- Step 4: 상세 치료 과정 -->
-    <div id="step4" class="step-4 hidden">
-        <div class="detail-container">
+    <!-- Step 4: 상세 결과 (한번에 보기) -->
+    <div id="step4" class="page-container hidden">
+        <div class="card">
             <div class="detail-header">
                 <h2 id="detailTitle"></h2>
                 <p id="detailSubtitle"></p>
-            </div>
-
-            <div class="progress-bar-container">
-                <p class="progress-label">치료 단계 <span id="currentStep">1</span> / <span id="totalSteps">2</span></p>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 50%"></div>
-                </div>
             </div>
 
             <div id="detailContent"></div>
@@ -919,7 +723,7 @@
             <div class="cost-comparison">
                 <div class="cost-box diagnosis">
                     <h4>💰 진단금</h4>
-                    <div class="amount" id="diagnosisAmount">2,000<br>만원</div>
+                    <div class="amount" id="diagnosisAmount">2,000만원</div>
                     <p>진단시 1회</p>
                 </div>
 
@@ -933,16 +737,14 @@
             <div class="difference" id="difference"></div>
 
             <div class="action-buttons">
-                <button class="back-button" onclick="goToStep(3)">← 목록</button>
-                <button class="continue-button" id="continueBtn" onclick="nextTreatment()">다음 단계 →</button>
+                <button class="btn-secondary" onclick="goToStep(3)">← 목록</button>
+                <button class="btn-primary" onclick="goToStep(3)">완료 ✓</button>
             </div>
         </div>
     </div>
 
     <script>
         let userGuess = 50;
-        let currentScenario = null;
-        let currentTreatmentStep = 0;
 
         const treatmentData = {
             single: {
@@ -1062,28 +864,14 @@
         }
 
         function showDetail(type) {
-            currentScenario = type;
-            currentTreatmentStep = 0;
-            
             const data = treatmentData[type];
+            
             document.getElementById('detailTitle').textContent = data.title;
             document.getElementById('detailSubtitle').textContent = data.subtitle;
-            document.getElementById('totalSteps').textContent = data.timeline.length;
             
-            updateTreatmentDisplay();
-            goToStep(4);
-        }
-
-        function updateTreatmentDisplay() {
-            const data = treatmentData[currentScenario];
-            
-            document.getElementById('currentStep').textContent = currentTreatmentStep + 1;
-            const progress = ((currentTreatmentStep + 1) / data.timeline.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-            
+            // 전체 타임라인 한번에 표시
             let timelineHTML = '<div class="treatment-timeline">';
-            for (let i = 0; i <= currentTreatmentStep; i++) {
-                const item = data.timeline[i];
+            data.timeline.forEach(item => {
                 timelineHTML += `
                     <div class="timeline-item">
                         <strong>${item.stage}</strong>
@@ -1091,44 +879,26 @@
                         ${item.cost > 0 ? `<div class="cost">+${item.cost.toLocaleString()}만원</div>` : ''}
                     </div>
                 `;
-            }
+            });
             timelineHTML += '</div>';
             document.getElementById('detailContent').innerHTML = timelineHTML;
             
-            let diagnosisTotal = 0;
-            let treatmentTotal = 0;
-            for (let i = 0; i <= currentTreatmentStep; i++) {
-                if (i === 0) diagnosisTotal = 2000;
-                treatmentTotal += data.timeline[i].cost;
-            }
+            // 최종 금액 표시
+            document.getElementById('diagnosisAmount').textContent = 
+                data.diagnosisTotal.toLocaleString() + '만원';
+            document.getElementById('treatmentAmount').textContent = 
+                data.treatmentTotal.toLocaleString() + '만원';
             
-            document.getElementById('diagnosisAmount').innerHTML = diagnosisTotal.toLocaleString() + '<br>만원';
-            document.getElementById('treatmentAmount').innerHTML = treatmentTotal.toLocaleString() + '<br>만원';
-            
+            // 차이 표시
             const diffElement = document.getElementById('difference');
-            if (currentTreatmentStep === data.timeline.length - 1) {
-                diffElement.textContent = data.differenceText;
-                diffElement.style.background = data.difference > 0 ? 
-                    'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)' : 
-                    'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
-                diffElement.style.display = 'block';
-                document.getElementById('continueBtn').textContent = '완료 ✓';
+            diffElement.textContent = data.differenceText;
+            if (data.difference > 0) {
+                diffElement.className = 'difference';
             } else {
-                diffElement.style.display = 'none';
-                document.getElementById('continueBtn').textContent = '다음 단계 →';
+                diffElement.className = 'difference negative';
             }
-        }
-
-        function nextTreatment() {
-            const data = treatmentData[currentScenario];
             
-            if (currentTreatmentStep < data.timeline.length - 1) {
-                currentTreatmentStep++;
-                updateTreatmentDisplay();
-                window.scrollTo(0, 0);
-            } else {
-                goToStep(3);
-            }
+            goToStep(4);
         }
 
         window.onload = function() {
