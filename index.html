@@ -43,7 +43,7 @@
 
         /* 공통 타이포그래피 */
         h1, h2 {
-            font-size: 1.6em;
+            font-size: 1.9em;
             color: #2d3748;
             line-height: 1.4;
             text-align: center;
@@ -51,7 +51,7 @@
         }
 
         .subtitle {
-            font-size: 1em;
+            font-size: 1.15em;
             color: #4a5568;
             text-align: center;
             margin-bottom: 25px;
@@ -190,8 +190,12 @@
             font-weight: 700;
         }
 
-        .slider-instruction .emoji {
-            font-size: 1.5em;
+        .slider-instruction p::before {
+            content: '⚡ ';
+        }
+        
+        .slider-instruction p::after {
+            content: ' ⚡';
         }
 
         .slider-values {
@@ -285,7 +289,7 @@
 
         .prediction-result .difference {
             font-size: 1.05em;
-            color: #e67e22;
+            color: white;
             font-weight: 600;
         }
 
@@ -396,19 +400,19 @@
         }
 
         .scenario-button .icon {
-            font-size: 2.5em;
+            font-size: 3em;
             margin-bottom: 10px;
         }
 
         .scenario-button .title {
-            font-size: 1.2em;
+            font-size: 1.5em;
             font-weight: 700;
             margin-bottom: 8px;
             color: #2d3748;
         }
 
         .scenario-button .percent {
-            font-size: 1.8em;
+            font-size: 2.2em;
             font-weight: 700;
             margin: 10px 0;
             color: #667eea;
@@ -418,6 +422,7 @@
             font-size: 0.9em;
             color: #4a5568;
             line-height: 1.4;
+            display: none;
         }
 
         .roulette-teaser {
@@ -597,6 +602,7 @@
             font-size: 1.05em;
             font-weight: 600;
             line-height: 1.4;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
         .difference.negative {
@@ -900,9 +906,7 @@
 
             <div class="slider-instruction">
                 <p>
-                    <span class="emoji">👇</span>
-                    슬라이더를 움직여 예측!
-                    <span class="emoji">👇</span>
+                    빨간점을 좌우로 움직여보세요
                 </p>
             </div>
 
@@ -1350,12 +1354,26 @@
                 ctx.translate(textX, textY);
                 ctx.rotate(textAngle + Math.PI / 2);
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 13px sans-serif';
+                
+                // 세그먼트 크기에 따라 폰트 크기 조정
+                let fontSize;
+                if (segment.percentage >= 50) {
+                    fontSize = 18; // 복합 55%
+                } else if (segment.percentage >= 20) {
+                    fontSize = 16; // 단일 21%
+                } else if (segment.percentage >= 14) {
+                    fontSize = 15; // 장기 15%
+                } else {
+                    fontSize = 13; // 재발 9%
+                }
+                
+                ctx.font = `bold ${fontSize}px sans-serif`;
                 ctx.textAlign = 'center';
                 
                 const lines = segment.label.split('\n');
+                const lineHeight = fontSize + 4;
                 lines.forEach((line, i) => {
-                    ctx.fillText(line, 0, (i - lines.length / 2 + 0.5) * 16);
+                    ctx.fillText(line, 0, (i - lines.length / 2 + 0.5) * lineHeight);
                 });
                 
                 ctx.restore();
@@ -1378,24 +1396,37 @@
             const spinBtn = document.getElementById('spinButton');
             if (spinBtn) spinBtn.disabled = true;
 
+            // 확률에 따라 결과 선택
             const randomResult = Math.random() * 100;
             let resultType;
             let cumulative = 0;
-            let targetAngle = 0;
             
             for (let i = 0; i < rouletteSegments.length; i++) {
                 const segment = rouletteSegments[i];
                 cumulative += segment.percentage;
                 if (randomResult <= cumulative) {
                     resultType = segment;
-                    let angleSum = 0;
-                    for (let j = 0; j < i; j++) {
-                        angleSum += (rouletteSegments[j].percentage / 100) * 360;
-                    }
-                    targetAngle = angleSum + (segment.percentage / 100) * 360 / 2;
                     break;
                 }
             }
+            
+            // 선택된 세그먼트의 중앙 각도 계산
+            let angleSum = 0;
+            for (let i = 0; i < rouletteSegments.length; i++) {
+                const segment = rouletteSegments[i];
+                const segmentAngle = (segment.percentage / 100) * 360;
+                
+                if (segment.type === resultType.type) {
+                    // 이 세그먼트의 중앙 각도
+                    angleSum += segmentAngle / 2;
+                    break;
+                }
+                angleSum += segmentAngle;
+            }
+            
+            // 포인터가 위쪽(12시 방향)에 있으므로, 
+            // 선택된 세그먼트가 위쪽에 오려면 시계방향으로 회전해야 함
+            const targetAngle = 360 - angleSum;
 
             const spins = 5 + Math.random() * 2;
             const totalRotation = spins * 360 + targetAngle;
@@ -1518,12 +1549,26 @@
                 ctx.translate(textX, textY);
                 ctx.rotate(textAngle + Math.PI / 2);
                 ctx.fillStyle = 'white';
-                ctx.font = 'bold 13px sans-serif';
+                
+                // 세그먼트 크기에 따라 폰트 크기 조정
+                let fontSize;
+                if (segment.percentage >= 50) {
+                    fontSize = 18; // 복합 55%
+                } else if (segment.percentage >= 20) {
+                    fontSize = 16; // 단일 21%
+                } else if (segment.percentage >= 14) {
+                    fontSize = 15; // 장기 15%
+                } else {
+                    fontSize = 13; // 재발 9%
+                }
+                
+                ctx.font = `bold ${fontSize}px sans-serif`;
                 ctx.textAlign = 'center';
                 
                 const lines = segment.label.split('\n');
+                const lineHeight = fontSize + 4;
                 lines.forEach((line, i) => {
-                    ctx.fillText(line, 0, (i - lines.length / 2 + 0.5) * 16);
+                    ctx.fillText(line, 0, (i - lines.length / 2 + 0.5) * lineHeight);
                 });
                 
                 ctx.restore();
