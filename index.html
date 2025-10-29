@@ -958,9 +958,8 @@
             </div>
 
             <div class="info-box">
-                <p>
-                    <strong>중요:</strong> 나머지 79명은 복합치료, 장기치료, 또는 재발을 경험합니다.<br>
-                    이것이 바로 암보험 선택의 핵심입니다.
+                <p style="font-size: 1.1em;">
+                    <strong>중요:</strong> 나머지 79명은 복합치료, 장기치료, 또는 재발을 경험합니다.
                 </p>
             </div>
 
@@ -974,7 +973,7 @@
     <div id="step3" class="page-container step-3 hidden">
         <div class="card">
             <h2>🔍 4가지 시나리오 체험</h2>
-            <p class="subtitle">실제 환자 케이스를 선택해서 비교해보세요</p>
+            <p class="subtitle">치료 방법을 클릭해보세요</p>
 
             <div class="scenario-grid">
                 <button class="scenario-button green" onclick="showDetail('single')">
@@ -1136,64 +1135,60 @@
             },
             complex: {
                 title: '💊 복합 치료 (55%)',
-                subtitle: '유방암 2기 - 여러 치료를 병행하는 경우',
+                subtitle: '50대 남성, 대장암 2기',
                 timeline: [
-                    { stage: '진단', content: '유방암 2기 발견', diagnosisCost: 2000, treatmentCost: 0 },
-                    { stage: '1년차', content: '수술 전 선행항암화학요법 (3개월)', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '1년차', content: '유방절제술', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '1년차', content: '수술 후 보조항암화학요법 (3개월)', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '1년차', content: '표적항암제 허셉틴 투여 시작', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '2년차', content: '방사선 치료 (5주)', diagnosisCost: 0, treatmentCost: 1000 }
+                    { stage: '25.11', content: '대장암(직장) 2기 진단', diagnosisCost: 2000, treatmentCost: 0 },
+                    { stage: '25.12', content: '대장 절제술 (복강경수술)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '25.12', content: '복막염으로 중환자실 입원', diagnosisCost: 0, treatmentCost: 500 },
+                    { stage: '26.01', content: '보조 항암약물치료 (6개월)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.07', content: '재발 방지 방사선치료 (20회, 6주)', diagnosisCost: 0, treatmentCost: 1000 }
                 ],
                 diagnosisTotal: 2000,
-                treatmentTotal: 5000,
-                difference: 3000,
-                differenceText: '치료비가 3,000만원 (2.5배) 더 유리합니다'
+                treatmentTotal: 3500,
+                difference: 1500,
+                differenceText: '치료비가 1,500만원 더 유리합니다'
             },
             longterm: {
                 title: '⏰ 장기 치료 (15%)',
-                subtitle: '폐암 3기 - 수년간 지속적으로 관리하는 경우',
+                subtitle: '60대 남성, 폐암 3기',
                 timeline: [
-                    { stage: '진단', content: '폐암 3기 발견', diagnosisCost: 2000, treatmentCost: 0 },
-                    { stage: '1년차', content: '동시항암방사선치료 (CCRT)', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '1년차', content: '공고항암화학요법', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '1년차', content: '1세대 표적항암제 이레사 투여', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '2년차', content: '내성 발생, 3세대 표적항암제 타그리소로 변경', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '3년차', content: '추가 진행, 면역항암제 키트루다 투여', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '3년차', content: '뇌 전이 발생, 정위방사선수술(SBRT)', diagnosisCost: 0, treatmentCost: 1000 }
+                    { stage: '25.12', content: '건강검진 중 폐암 3기 진단', diagnosisCost: 2000, treatmentCost: 0 },
+                    { stage: '26.01', content: '폐엽 절제술 (10일 입원)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.02', content: '세포독성 항암약물치료 (6주)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.03', content: '항암방사선 치료 (25회, 6주)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.07', content: '표적항암제 유지요법 타그리소 (1년차)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '27.07', content: '표적항암제 유지요법 타그리소 (2년차)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '28.07', content: '표적항암제 유지요법 타그리소 (3년차)', diagnosisCost: 0, treatmentCost: 1000 }
                 ],
                 diagnosisTotal: 2000,
                 treatmentTotal: 6000,
                 difference: 4000,
-                differenceText: '치료비가 4,000만원 (3배) 더 유리합니다'
+                differenceText: '치료비가 4,000만원 더 유리합니다'
             },
             recurrence: {
                 title: '🔄 재발·전이 (9%)',
-                subtitle: '난소암 3기 - 재발하여 2차 치료가 필요한 경우',
+                subtitle: '40대 후반 여성, 유방암 2기',
                 timeline: [
-                    { stage: '초기 진단', content: '난소암 3기 발견', diagnosisCost: 2000, treatmentCost: 0 },
-                    { stage: '초기 1년차', content: '종양감축술 (수술)', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '초기 1년차', content: '중환자실 입원', diagnosisCost: 0, treatmentCost: 500 },
-                    { stage: '초기 1년차', content: '보조항암화학요법', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '초기 1년차', content: '유지항암화학요법 린파자', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '재발 3년차', content: '2차 항암화학요법', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '재발 3년차', content: '복수 천자 및 입원', diagnosisCost: 0, treatmentCost: 500 },
-                    { stage: '재발 3년차', content: '3차 항암화학요법', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '재발 3년차', content: '표적항암제 아바스틴 병행', diagnosisCost: 0, treatmentCost: 1000 },
-                    { stage: '재발 3년차', content: '통증/복수 관리 입원', diagnosisCost: 0, treatmentCost: 500 }
+                    { stage: '26.04', content: '건강검진 통해 유방암 2기 진단', diagnosisCost: 2000, treatmentCost: 0 },
+                    { stage: '26.05', content: '유방보존술 시행 (부분절제)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.06', content: '항암약물 치료 (3개월)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '26.10', content: '항암방사선 치료 (25회, 3개월)', diagnosisCost: 0, treatmentCost: 1000 },
+                    { stage: '29.02', content: 'PET 검사로 뼈 전이 확진', diagnosisCost: 0, treatmentCost: 0 },
+                    { stage: '29.03', content: '표적항암치료 (2년)', diagnosisCost: 0, treatmentCost: 2000 },
+                    { stage: '29.03', content: '항암호르몬약물치료 타목시펜 (5년)', diagnosisCost: 0, treatmentCost: 0 }
                 ],
                 diagnosisTotal: 2000,
-                treatmentTotal: 7500,
-                difference: 5500,
-                differenceText: '치료비가 5,500만원 (3.75배) 더 유리합니다'
+                treatmentTotal: 5000,
+                difference: 3000,
+                differenceText: '치료비가 3,000만원 더 유리합니다'
             }
         };
 
         const rouletteSegments = [
             { type: 'single', label: '단일\n21%', color: '#2ecc71', percentage: 21, profit: 1000 },
-            { type: 'complex', label: '복합\n55%', color: '#3498db', percentage: 55, profit: -3000 },
+            { type: 'complex', label: '복합\n55%', color: '#3498db', percentage: 55, profit: -1500 },
             { type: 'longterm', label: '장기\n15%', color: '#9b59b6', percentage: 15, profit: -4000 },
-            { type: 'recurrence', label: '재발\n9%', color: '#e74c3c', percentage: 9, profit: -5500 }
+            { type: 'recurrence', label: '재발\n9%', color: '#e74c3c', percentage: 9, profit: -3000 }
         ];
 
         function createPeopleGrid() {
@@ -1355,16 +1350,15 @@
                 ctx.rotate(textAngle + Math.PI / 2);
                 ctx.fillStyle = 'white';
                 
-                // 세그먼트 크기에 따라 폰트 크기 조정
                 let fontSize;
                 if (segment.percentage >= 50) {
-                    fontSize = 18; // 복합 55%
+                    fontSize = 18;
                 } else if (segment.percentage >= 20) {
-                    fontSize = 16; // 단일 21%
+                    fontSize = 16;
                 } else if (segment.percentage >= 14) {
-                    fontSize = 15; // 장기 15%
+                    fontSize = 15;
                 } else {
-                    fontSize = 13; // 재발 9%
+                    fontSize = 13;
                 }
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -1396,7 +1390,7 @@
             const spinBtn = document.getElementById('spinButton');
             if (spinBtn) spinBtn.disabled = true;
 
-            // 확률에 따라 결과 선택
+            // 1. 확률에 따라 결과 선택
             const randomResult = Math.random() * 100;
             let resultType;
             let cumulative = 0;
@@ -1410,50 +1404,88 @@
                 }
             }
             
-            // 선택된 세그먼트의 중앙 각도 계산
-            let angleSum = 0;
+            console.log('=== 룰렛 회전 디버깅 ===');
+            console.log('선택된 결과:', resultType.type, resultType.percentage + '%');
+            
+            // 2. 선택된 세그먼트의 시작/끝/중앙 각도 계산
+            let startAngle = 0;
             for (let i = 0; i < rouletteSegments.length; i++) {
                 const segment = rouletteSegments[i];
                 const segmentAngle = (segment.percentage / 100) * 360;
                 
                 if (segment.type === resultType.type) {
-                    // 이 세그먼트의 중앙 각도
-                    angleSum += segmentAngle / 2;
-                    break;
+                    const endAngle = startAngle + segmentAngle;
+                    const centerAngle = startAngle + segmentAngle / 2;
+                    
+                    console.log('세그먼트 범위:', startAngle.toFixed(1) + '° ~ ' + endAngle.toFixed(1) + '°');
+                    console.log('세그먼트 중앙:', centerAngle.toFixed(1) + '°');
+                    
+                    // 포인터는 12시 방향 = 270도
+                    const pointerAngle = 270;
+                    console.log('포인터 위치:', pointerAngle + '°');
+                    console.log('현재 룰렛 회전 각도:', currentRotation.toFixed(1) + '°');
+                    
+                    // 현재 세그먼트가 실제로 어디에 위치하는지 계산
+                    const currentSegmentPosition = (centerAngle + currentRotation) % 360;
+                    console.log('현재 세그먼트 위치:', currentSegmentPosition.toFixed(1) + '°');
+                    
+                    // 세그먼트를 270도로 이동시키기 위한 회전량
+                    let neededRotation = pointerAngle - currentSegmentPosition;
+                    console.log('필요한 회전량 (1차):', neededRotation.toFixed(1) + '°');
+                    
+                    // 음수면 360 더하기 (항상 양수 회전)
+                    if (neededRotation < 0) {
+                        neededRotation += 360;
+                    }
+                    console.log('필요한 회전량 (최종):', neededRotation.toFixed(1) + '°');
+                    
+                    // 여러 바퀴 + 필요한 회전량
+                    const spins = 5 + Math.random() * 2;
+                    const totalRotation = spins * 360 + neededRotation;
+                    console.log('총 회전량:', totalRotation.toFixed(1) + '° (' + spins.toFixed(1) + '바퀴)');
+                    
+                    const finalRotation = currentRotation + totalRotation;
+                    console.log('최종 각도:', finalRotation.toFixed(1) + '°');
+                    console.log('최종 각도 (mod 360):', (finalRotation % 360).toFixed(1) + '°');
+                    
+                    // 검증: 최종 위치에서 세그먼트 중앙이 270도에 있는지?
+                    const finalSegmentPosition = (centerAngle + finalRotation) % 360;
+                    console.log('최종 세그먼트 중앙 위치:', finalSegmentPosition.toFixed(1) + '°');
+                    console.log('포인터와의 차이:', Math.abs(finalSegmentPosition - 270).toFixed(1) + '°');
+                    console.log('==================');
+                    
+                    const spinDuration = 4000;
+                    
+                    animateRoulette(currentRotation, finalRotation, spinDuration, () => {
+                        console.log('>>> 콜백 실행됨!');
+                        console.log('>>> 업데이트 전 currentRotation:', currentRotation.toFixed(1) + '°');
+                        currentRotation = finalRotation % 360;
+                        console.log('>>> 업데이트 후 currentRotation:', currentRotation.toFixed(1) + '°');
+                        
+                        setTimeout(() => {
+                            showResult(resultType);
+                            isSpinning = false;
+                            if (spinBtn) spinBtn.disabled = false;
+                            
+                            totalSpins++;
+                            diagnosisTotalAmount += 2000;
+                            
+                            const treatmentAmounts = {
+                                'single': 1000,
+                                'complex': 3500,
+                                'longterm': 6000,
+                                'recurrence': 5000
+                            };
+                            treatmentTotalAmount += treatmentAmounts[resultType.type];
+                            
+                            updateSpinStats();
+                        }, 500);
+                    });
+                    
+                    return;
                 }
-                angleSum += segmentAngle;
+                startAngle += segmentAngle;
             }
-            
-            // 포인터가 위쪽(12시 방향)에 있으므로, 
-            // 선택된 세그먼트가 위쪽에 오려면 시계방향으로 회전해야 함
-            const targetAngle = 360 - angleSum;
-
-            const spins = 5 + Math.random() * 2;
-            const totalRotation = spins * 360 + targetAngle;
-            const spinDuration = 4000;
-            
-            animateRoulette(currentRotation, currentRotation + totalRotation, spinDuration, () => {
-                currentRotation = (currentRotation + totalRotation) % 360;
-                
-                setTimeout(() => {
-                    showResult(resultType);
-                    isSpinning = false;
-                    if (spinBtn) spinBtn.disabled = false;
-                    
-                    totalSpins++;
-                    diagnosisTotalAmount += 2000;
-                    
-                    const treatmentAmounts = {
-                        'single': 1000,
-                        'complex': 5000,
-                        'longterm': 6000,
-                        'recurrence': 7500
-                    };
-                    treatmentTotalAmount += treatmentAmounts[resultType.type];
-                    
-                    updateSpinStats();
-                }, 500);
-            });
         }
 
         function updateSpinStats() {
@@ -1504,6 +1536,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.translate(canvas.width / 2, canvas.height / 2);
+                // 양수 회전 (테스트에서 검증됨)
                 ctx.rotate((currentAngle * Math.PI) / 180);
                 ctx.translate(-canvas.width / 2, -canvas.height / 2);
                 
@@ -1550,16 +1583,15 @@
                 ctx.rotate(textAngle + Math.PI / 2);
                 ctx.fillStyle = 'white';
                 
-                // 세그먼트 크기에 따라 폰트 크기 조정
                 let fontSize;
                 if (segment.percentage >= 50) {
-                    fontSize = 18; // 복합 55%
+                    fontSize = 18;
                 } else if (segment.percentage >= 20) {
-                    fontSize = 16; // 단일 21%
+                    fontSize = 16;
                 } else if (segment.percentage >= 14) {
-                    fontSize = 15; // 장기 15%
+                    fontSize = 15;
                 } else {
-                    fontSize = 13; // 재발 9%
+                    fontSize = 13;
                 }
                 
                 ctx.font = `bold ${fontSize}px sans-serif`;
@@ -1609,9 +1641,7 @@
                     amountElement.textContent = '1,000만원 이득';
                 } else {
                     const lossAmount = Math.abs(resultType.profit);
-                    amountElement.textContent = lossAmount === 3000 ? '3,000만원 손실' : 
-                                               lossAmount === 4000 ? '4,000만원 손실' : 
-                                               '5,500만원 손실';
+                    amountElement.textContent = lossAmount.toLocaleString() + '만원 손실';
                 }
             }
 
@@ -1623,7 +1653,7 @@
             } else if (resultType.type === 'longterm') {
                 explanation = '15%의 장기전. 수년간 치료가 필요합니다. 진단금 2천만원으로는 턱없이 부족합니다.';
             } else {
-                explanation = '9%의 최악. 재발한 경우입니다. 진단금은 추가 지급이 없지만 치료비는 계속 나옵니다!';
+                explanation = '9%의 재발·전이. 재발한 경우입니다. 진단금은 추가 지급이 없지만 치료비는 계속 나옵니다!';
             }
             
             const explEl = document.getElementById('resultExplanation');
