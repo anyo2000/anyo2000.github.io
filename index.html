@@ -1383,6 +1383,43 @@
             ctx.stroke();
         }
 
+        // ⭐ 새로 추가: 회전 후 실제로 포인터가 가리키는 세그먼트를 계산하는 함수
+        function getSegmentAtPointer(rotation) {
+            const pointerAngle = 270; // 12시 방향 (고정)
+            
+            let segmentStart = 0;
+            for (let i = 0; i < rouletteSegments.length; i++) {
+                const segment = rouletteSegments[i];
+                const segmentAngle = (segment.percentage / 100) * 360;
+                const segmentEnd = segmentStart + segmentAngle;
+                
+                // 회전 후 세그먼트의 실제 위치 계산
+                let actualStart = (segmentStart + rotation) % 360;
+                let actualEnd = (segmentEnd + rotation) % 360;
+                
+                // 포인터가 이 세그먼트 내에 있는지 확인
+                if (actualStart <= actualEnd) {
+                    // 일반적인 경우 (360도를 넘지 않음)
+                    if (pointerAngle >= actualStart && pointerAngle <= actualEnd) {
+                        console.log('>>> 매칭된 세그먼트:', segment.type, actualStart.toFixed(1) + '° ~ ' + actualEnd.toFixed(1) + '°');
+                        return segment;
+                    }
+                } else {
+                    // 세그먼트가 0도를 지나는 경우
+                    if (pointerAngle >= actualStart || pointerAngle <= actualEnd) {
+                        console.log('>>> 매칭된 세그먼트 (0도 교차):', segment.type, actualStart.toFixed(1) + '° ~ ' + actualEnd.toFixed(1) + '°');
+                        return segment;
+                    }
+                }
+                
+                segmentStart = segmentEnd;
+            }
+            
+            // 매칭 실패 시 (이론적으로는 발생하지 않아야 함)
+            console.error('>>> 경고: 매칭된 세그먼트를 찾지 못함!');
+            return rouletteSegments[0];
+        }
+
         function spinRoulette() {
             if (isSpinning) return;
             
@@ -1462,8 +1499,17 @@
                         currentRotation = finalRotation % 360;
                         console.log('>>> 업데이트 후 currentRotation:', currentRotation.toFixed(1) + '°');
                         
+                        // ⭐ 핵심: 실제로 포인터가 가리키는 세그먼트 계산
+                        const actualResult = getSegmentAtPointer(currentRotation);
+                        console.log('>>> 원래 의도한 결과:', resultType.type);
+                        console.log('>>> 실제 포인터가 가리키는 결과:', actualResult.type);
+                        
+                        if (resultType.type !== actualResult.type) {
+                            console.warn('⚠️ 불일치 발생! 실제 결과로 수정합니다.');
+                        }
+                        
                         setTimeout(() => {
-                            showResult(resultType);
+                            showResult(actualResult); // ✅ resultType 대신 actualResult 사용
                             isSpinning = false;
                             if (spinBtn) spinBtn.disabled = false;
                             
@@ -1476,7 +1522,7 @@
                                 'longterm': 6000,
                                 'recurrence': 5000
                             };
-                            treatmentTotalAmount += treatmentAmounts[resultType.type];
+                            treatmentTotalAmount += treatmentAmounts[actualResult.type]; // ✅ actualResult 사용
                             
                             updateSpinStats();
                         }, 500);
@@ -1536,7 +1582,6 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
                 ctx.translate(canvas.width / 2, canvas.height / 2);
-                // 양수 회전 (테스트에서 검증됨)
                 ctx.rotate((currentAngle * Math.PI) / 180);
                 ctx.translate(-canvas.width / 2, -canvas.height / 2);
                 
